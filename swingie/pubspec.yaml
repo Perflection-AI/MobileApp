@@ -28,6 +28,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  google_sign_in: ^6.0.0   # For Google Login
+  sign_in_with_apple: ^5.0.0 # For Apple Login
+  firebase_auth: ^5.0.0     # If you use Firebase Authentication
+
   flutter:
     sdk: flutter
 
