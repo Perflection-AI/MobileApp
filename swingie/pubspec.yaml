@@ -63,6 +63,8 @@ flutter:
 
   assets:
     - assets/landing-bgp.png
+    - assets/Google1.png
+    - assets/Apple1.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
