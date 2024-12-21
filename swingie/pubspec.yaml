@@ -28,6 +28,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  google_sign_in: ^6.0.0   # For Google Login
+  sign_in_with_apple: ^5.0.0 # For Apple Login
+  firebase_auth: ^5.0.0     # If you use Firebase Authentication
+
   flutter:
     sdk: flutter
 
@@ -59,6 +63,10 @@ flutter:
 
   assets:
     - assets/landing-bgp.png
+    - assets/Google1.png
+    - assets/Apple1.png
+    - assets/mail_icon.png
+    - assets/questionnaire_intro.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
