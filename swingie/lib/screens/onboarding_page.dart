@@ -53,6 +53,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
       'defaultValue': 60,
       'type': 'scroll_picker',
     },
+    {
+      'title': 'Do you play golf left or right handed? 🙌',
+      'description': 'Dexterity is used for auto swing capture guidance.',
+      'options': ['Left-handed', 'Right-handed'],
+      'showInput': false,
+    },
+    {
+      'title': 'What is your proficiency on playing golf? ⛳',
+      'description': 'This will help us personalize your coaching experience.',
+      'options': [
+        '1 - Fundamental Awareness',
+        '2 - Novice',
+        '3 - Intermediate',
+        '4 - Advanced',
+        '5 - Expert'
+      ],
+      'showInput': false,
+    },
   ];
 
   String selectedUnit = ''; // Current selected unit for height/weight
@@ -73,6 +91,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final step = onboardingSteps[currentStep];
 
     return Scaffold(
+      backgroundColor: Colors.white, // Set the background to white
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -110,6 +129,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
           ),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -167,27 +187,37 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         )
                         .toList(),
-                  // Render Gender Options
+                  // Render Options (e.g., Gender, Left/Right-handed, Proficiency Levels)
                   if (step['options'] != null && step['options'].isNotEmpty)
-                    ...step['options']
-                        .map<Widget>(
-                          (option) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text(option),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[100],
-                                foregroundColor: Colors.black,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
+                    ...step['options'].map<Widget>((option) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle selection logic here if needed
+                          },
+                          child: Text(option,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                           ),
-                        )
-                        .toList(),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 13, horizontal: 25),
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              side: BorderSide(color: Color(0xFFD1D5DB)), // Gray-300 border
+                            ),
+                            elevation: 1,
+                            shadowColor: Colors.black.withOpacity(0.05), // Shadow effect
+                          ),
+                        ),
+                      );
+                    }).toList(),
+
                   // Render Age Picker
                   if (step['type'] == 'age_picker')
                     Container(
@@ -218,33 +248,60 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                   // Render Height/Weight Picker
                   if (step['type'] == 'scroll_picker') ...[
-                    ToggleButtons(
-                      isSelected: [
-                        selectedUnit == step['unitOptions'][0],
-                        selectedUnit == step['unitOptions'][1],
-                      ],
-                      onPressed: (index) {
-                        setState(() {
-                          selectedUnit = step['unitOptions'][index];
-                          selectedValue =
-                              selectedUnit == 'cm' ? 150 : (selectedUnit == 'kg' ? 60 : 60);
-                        });
-                      },
-                      children: step['unitOptions']
-                          .map<Widget>(
-                            (unit) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Text(
-                                unit,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                    Container(
+                      width: 328, // Fixed width for the picker
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Color(0xFFF3F4F6), // Background: #F3F4F6 (Gray 100)
+                      ),
+                      child: Row(
+                        children: step['unitOptions'].map<Widget>((unit) {
+                          final isSelected = selectedUnit == unit;
+                          return Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedUnit = unit;
+                                  selectedValue = unit == 'cm'
+                                      ? 150
+                                      : unit == 'inch'
+                                          ? 60
+                                          : unit == 'kg'
+                                              ? 60
+                                              : 120; // Dynamic default values
+                                });
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: isSelected ? Color(0xFF41902D) : Colors.transparent,
+                                  borderRadius: unit == step['unitOptions'][0]
+                                      ? BorderRadius.only(
+                                          topLeft: Radius.circular(8),
+                                          bottomLeft: Radius.circular(8),
+                                        )
+                                      : BorderRadius.only(
+                                          topRight: Radius.circular(8),
+                                          bottomRight: Radius.circular(8),
+                                        ),
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                child: Text(
+                                  unit,
+                                  style: TextStyle(
+                                    color: isSelected ? Colors.white : Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          )
-                          .toList(),
+                          );
+                        }).toList(),
+                      ),
                     ),
+
                     SizedBox(height: 16),
                     Container(
                       height: 150,
@@ -275,11 +332,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               ),
                             );
                           },
-                          childCount: 100, // Display 100 options
+                          childCount: (selectedUnit == 'kg' ? 200 : 300), // Adjust limits here
                         ),
                       ),
                     ),
                   ],
+
                   Spacer(),
                   ElevatedButton(
                     onPressed: () {
